@@ -19,7 +19,7 @@ import (
 	"context"
 	"reflect"
 
-	jobsv1 "github.com/droot/crd-conversion-example/pkg/apis/jobs/v1"
+	jobsv1 "github.com/jenting/crd-conversion-example/pkg/apis/jobs/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -30,9 +30,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
@@ -98,7 +98,7 @@ type ReconcileExternalJob struct {
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=jobs.example.org,resources=externaljobs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=jobs.example.org,resources=externaljobs/status,verbs=get;update;patch
-func (r *ReconcileExternalJob) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ReconcileExternalJob) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	// Fetch the ExternalJob instance
 	instance := &jobsv1.ExternalJob{}
 	err := r.Get(context.TODO(), request.NamespacedName, instance)

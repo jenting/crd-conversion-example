@@ -16,7 +16,7 @@ limitations under the License.
 package controller
 
 import (
-	"github.com/droot/crd-conversion-example/pkg/controller/externaljob"
+	"github.com/jenting/crd-conversion-example/pkg/controller/externaljob"
 )
 
 func init() {

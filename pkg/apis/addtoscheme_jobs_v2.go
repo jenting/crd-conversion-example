@@ -16,7 +16,7 @@ limitations under the License.
 package apis
 
 import (
-	"github.com/droot/crd-conversion-example/pkg/apis/jobs/v2"
+	v2 "github.com/jenting/crd-conversion-example/pkg/apis/jobs/v2"
 )
 
 func init() {

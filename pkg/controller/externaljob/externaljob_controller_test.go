@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	jobsv1 "github.com/droot/crd-conversion-example/pkg/apis/jobs/v1"
+	jobsv1 "github.com/jenting/crd-conversion-example/pkg/apis/jobs/v1"
 	"github.com/onsi/gomega"
 	"golang.org/x/net/context"
 	appsv1 "k8s.io/api/apps/v1"

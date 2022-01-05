@@ -18,9 +18,10 @@ package v1
 import (
 	"fmt"
 
-	"github.com/droot/crd-conversion-example/pkg/apis/jobs/v2"
-	"github.com/droot/crd-conversion-example/pkg/conversion"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/conversion"
+
+	v2 "github.com/jenting/crd-conversion-example/pkg/apis/jobs/v2"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -67,7 +68,7 @@ func init() {
 
 // since v1.ExternalJob is a spoke, it needs to be convertable.
 // It needs to implement convert to/from storage version
-// TODO(droot): evaluate advantages of taking `conversion.Hub` as input to
+// TODO(jenting): evaluate advantages of taking `conversion.Hub` as input to
 // converter methods. One downside of that approach is if we don't want to
 // use Hub interface to indicate storage/hub type, then taking Hub as input
 // is not a good idea. So keeping it open.

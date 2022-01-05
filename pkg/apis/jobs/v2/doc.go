@@ -16,7 +16,7 @@ limitations under the License.
 // Package v2 contains API Schema definitions for the jobs v2 API group
 // +k8s:openapi-gen=true
 // +k8s:deepcopy-gen=package,register
-// +k8s:conversion-gen=github.com/droot/crd-conversion-example/pkg/apis/jobs
+// +k8s:conversion-gen=github.com/jenting/crd-conversion-example/pkg/apis/jobs
 // +k8s:defaulter-gen=TypeMeta
 // +groupName=jobs.example.org
 package v2

@@ -6,16 +6,15 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/droot/crd-conversion-example/pkg/conversion"
+	apix "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"sigs.k8s.io/controller-runtime/pkg/conversion"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
 	jsonencoding "encoding/json"
-
-	apix "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 var (
@@ -69,7 +68,7 @@ func (cb *ConversionWebhook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := cb.decoder.DecodeInto(body, &convertReview)
 	if err != nil {
 		log.Error(err, "error decoding conversion request")
-		// TODO(droot): define helper for returning conversion error response
+		// TODO(jenting): define helper for returning conversion error response
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -81,7 +80,7 @@ func (cb *ConversionWebhook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// err = cb.serializer.Encode(&convertReview, w)
 	if err != nil {
 		log.Error(err, "error encoding conversion request")
-		// TODO(droot): define helper for returning conversion error
+		// TODO(jenting): define helper for returning conversion error
 		// response
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -119,7 +118,7 @@ func (cb *ConversionWebhook) handleConvertRequest(req *apix.ConversionRequest) *
 }
 
 func (cb *ConversionWebhook) convertObject(src, dst runtime.Object) error {
-	// TODO(droot): figure out a less verbose version of this check
+	// TODO(jenting): figure out a less verbose version of this check
 	if src.GetObjectKind().GroupVersionKind().String() == dst.GetObjectKind().GroupVersionKind().String() {
 		return fmt.Errorf("conversion is not allowed between same type %T", src)
 	}
@@ -129,7 +128,7 @@ func (cb *ConversionWebhook) convertObject(src, dst runtime.Object) error {
 
 	if srcIsHub {
 		if dstIsConvertable {
-			return dst.(conversion.Convertable).ConvertFrom(src.(conversion.Hub))
+			return dst.(conversion.Convertible).ConvertFrom(src.(conversion.Hub))
 		} else {
 			// this is error case, this can be flagged at setup time ?
 			return fmt.Errorf("%T is not convertable to", src)
@@ -138,7 +137,7 @@ func (cb *ConversionWebhook) convertObject(src, dst runtime.Object) error {
 
 	if dstIsHub {
 		if srcIsConvertable {
-			return src.(conversion.Convertable).ConvertTo(dst.(conversion.Hub))
+			return src.(conversion.Convertible).ConvertTo(dst.(conversion.Hub))
 		} else {
 			// this is error case.
 			return fmt.Errorf("%T is not convertable", src)
@@ -158,12 +157,12 @@ func (cb *ConversionWebhook) convertObject(src, dst runtime.Object) error {
 		return fmt.Errorf("%T and %T needs to be both convertable", src, dst)
 	}
 
-	err = src.(conversion.Convertable).ConvertTo(hub)
+	err = src.(conversion.Convertible).ConvertTo(hub)
 	if err != nil {
 		return fmt.Errorf("%T failed to convert to hub version %T : %v", src, hub, err)
 	}
 
-	err = dst.(conversion.Convertable).ConvertFrom(hub)
+	err = dst.(conversion.Convertible).ConvertFrom(hub)
 	if err != nil {
 		return fmt.Errorf("%T failed to convert from hub version %T : %v", dst, hub, err)
 	}
@@ -243,6 +242,6 @@ func isHub(obj runtime.Object) bool {
 }
 
 func isConvertable(obj runtime.Object) bool {
-	_, yes := obj.(conversion.Convertable)
+	_, yes := obj.(conversion.Convertible)
 	return yes
 }
